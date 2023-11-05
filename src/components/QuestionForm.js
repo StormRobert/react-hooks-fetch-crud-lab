@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-function QuestionForm( AddQuestion) {
+function QuestionForm( {AddQuestion}) {
   const [formData, setFormData] = useState({
     prompt: "",
     answer1: "",

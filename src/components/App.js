@@ -34,10 +34,49 @@ function App() {
     .then((question) => setQuestions([...questions, question]))
   }
 
+  function handleDeleteQuestion(id) {
+    fetch(`http://localhost:4000/questions/${id}`, {
+      method: 'DELETE',
+    })
+    .then(response => response.json())
+    .then(() => {
+      const updatedQuestions = questions.filter((question) => question.id !== id)
+      setQuestions(updatedQuestions)
+    })
+  }
+
+  function handleUpdateQuestion(id, newCorrectIndex) {
+    fetch(`http://localhost:4000/questions/${id}`, {
+      method: 'PATCH',
+      headers:{
+        "Content-Type" : "application/json"
+      },
+      body: JSON.stringify({
+        "correctIndex" : newCorrectIndex
+      })
+    })
+    .then(response => response.json())
+    .then((updatedQuestion) => {
+      const updatedQuestions = questions.map((question) => {
+        if (question.id === updatedQuestion.id) {
+          return updatedQuestion;
+        }
+        return question;
+      });
+      setQuestions(updatedQuestions);
+    });
+  }
+
   return (
     <main>
       <AdminNavBar onChangePage={setPage} />
-      {page === "Form" ? <QuestionForm /> : <QuestionList />}
+      {page === "Form" ? 
+      <QuestionForm 
+      addQuestion= {handleAddQuestion}/>
+      : 
+      <QuestionList  questions={questions} 
+      handleDelete={handleDeleteQuestion}
+      handleUpdate={handleUpdateQuestion} />}
     </main>
   );
 }
